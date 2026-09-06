@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0c0d0f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Thumbnail Lab" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+  <title>Thumbnail Lab</title>
+  <meta name="description" content="A local-first YouTube thumbnail tester." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-wrap">
+      <div class="brand-mark">TL</div>
+      <div>
+        <div class="brand">Thumbnail Lab</div>
+        <div class="subtle">Private YouTube thumbnail testing</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="button ghost install-button" id="installBtn">Install on iPad</button>
+      <button class="button ghost" id="resetBtn">Reset</button>
+      <button class="button" id="demoBtn">Load demo cards</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="sidebar panel">
+      <section>
+        <h2>Video details</h2>
+        <label class="field">
+          <span>Video title</span>
+          <textarea id="videoTitle" rows="3" maxlength="100">I Run Hytale's Biggest PvP Server</textarea>
+          <small><span id="titleCount">0</span>/100</small>
+        </label>
+
+        <div class="field-grid two">
+          <label class="field">
+            <span>Channel</span>
+            <input id="channelName" type="text" value="MattHytale" />
+          </label>
+          <label class="field">
+            <span>Views</span>
+            <input id="viewsText" type="text" value="43K views" />
+          </label>
+        </div>
+
+        <div class="field-grid two">
+          <label class="field">
+            <span>Published</span>
+            <input id="publishedText" type="text" value="2 hours ago" />
+          </label>
+          <label class="field">
+            <span>Avatar</span>
+            <input id="avatarInput" type="file" accept="image/*" />
+          </label>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-heading-row">
+          <h2>Test settings</h2>
+          <span class="badge">Local only</span>
+        </div>
+        <label class="field">
+          <span>Preview size</span>
+          <select id="previewSize">
+            <option value="desktop">Desktop Home</option>
+            <option value="mobile">Mobile Home</option>
+            <option value="suggested">Suggested / Sidebar</option>
+            <option value="tiny">Tiny feed test</option>
+          </select>
+        </label>
+
+        <div class="toggle-list">
+          <label class="toggle-row"><span>Blur / squint test</span><input id="blurToggle" type="checkbox" /><i></i></label>
+          <label class="toggle-row"><span>Grayscale test</span><input id="grayToggle" type="checkbox" /><i></i></label>
+          <label class="toggle-row"><span>Dim feed test</span><input id="dimToggle" type="checkbox" /><i></i></label>
+        </div>
+      </section>
+
+      <section>
+        <h2>Blind flash test</h2>
+        <p class="small-copy">Show one thumbnail briefly, hide it, then write what you remember.</p>
+        <div class="field-grid two">
+          <label class="field">
+            <span>Duration</span>
+            <select id="flashDuration">
+              <option value="300">300 ms</option>
+              <option value="500" selected>500 ms</option>
+              <option value="750">750 ms</option>
+              <option value="1000">1 second</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Version</span>
+            <select id="flashVersion">
+              <option value="0">A</option>
+              <option value="1">B</option>
+              <option value="2">C</option>
+            </select>
+          </label>
+        </div>
+        <button class="button full" id="flashBtn">Start flash test</button>
+      </section>
+    </aside>
+
+    <section class="content-column">
+      <section class="panel upload-panel">
+        <div class="section-heading-row">
+          <div>
+            <h1>Thumbnail variants</h1>
+            <p class="muted">Upload up to three 16:9 thumbnails. Everything stays in your browser.</p>
+          </div>
+          <div class="legend"><span>A</span><span>B</span><span>C</span></div>
+        </div>
+        <div class="variant-grid" id="variantGrid"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading-row">
+          <div>
+            <h2>YouTube feed preview</h2>
+            <p class="muted">The useful test: your thumbnail in context, not floating by itself.</p>
+          </div>
+          <div class="segmented" id="layoutTabs">
+            <button data-layout="grid" class="active">Grid</button>
+            <button data-layout="focus">Focus</button>
+          </div>
+        </div>
+        <div class="youtube-stage" id="youtubeStage"></div>
+      </section>
+
+      <section class="analysis-grid">
+        <section class="panel">
+          <div class="section-heading-row">
+            <div>
+              <h2>Visual metrics</h2>
+              <p class="muted">Basic image measurements — not a CTR prediction.</p>
+            </div>
+          </div>
+          <div id="metricsTable" class="metrics-table"></div>
+        </section>
+
+        <section class="panel">
+          <h2>Your scorecard</h2>
+          <p class="muted">Rate what matters after viewing the thumbnails at realistic sizes.</p>
+          <div id="scorecard"></div>
+        </section>
+      </section>
+
+      <section class="panel compare-panel">
+        <div class="section-heading-row">
+          <div>
+            <h2>A/B flicker compare</h2>
+            <p class="muted">Rapid switching makes composition and focal changes obvious.</p>
+          </div>
+          <div class="compare-controls">
+            <select id="compareLeft"><option value="0">A</option><option value="1">B</option><option value="2">C</option></select>
+            <span>vs</span>
+            <select id="compareRight"><option value="1">B</option><option value="0">A</option><option value="2">C</option></select>
+            <button class="button" id="flickerBtn">Start flicker</button>
+          </div>
+        </div>
+        <div class="compare-canvas" id="compareCanvas">
+          <div class="empty-state">Upload at least two thumbnails to compare them.</div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="flash-overlay hidden" id="flashOverlay">
+    <div class="flash-card" id="flashCard"></div>
+  </div>
+
+  <div class="modal hidden" id="recallModal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h2>What do you remember?</h2>
+      <p class="muted">Describe the subject, emotion, text, and what you think the video was about.</p>
+      <textarea id="recallText" rows="5" placeholder="I remember..."></textarea>
+      <div class="modal-actions">
+        <button class="button ghost" id="closeRecall">Close</button>
+        <button class="button" id="saveRecall">Save note</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="install-modal modal hidden" id="installModal" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+    <div class="modal-card install-card">
+      <div class="install-icon">TL</div>
+      <h2 id="installTitle">Install Thumbnail Lab on iPad</h2>
+      <p class="muted">Open this site in Safari, then:</p>
+      <ol class="install-steps">
+        <li>Tap the <strong>Share</strong> button in Safari.</li>
+        <li>Choose <strong>Add to Home Screen</strong>.</li>
+        <li>Tap <strong>Add</strong>.</li>
+      </ol>
+      <p class="small-copy">Once installed, Thumbnail Lab opens full-screen and can work offline after the first successful visit.</p>
+      <div class="modal-actions">
+        <button class="button" id="closeInstall">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <template id="variantTemplate">
+    <article class="variant-card">
+      <div class="variant-head">
+        <span class="variant-letter"></span>
+        <button class="text-button clear-image">Clear</button>
+      </div>
+      <label class="drop-zone">
+        <input class="thumb-input" type="file" accept="image/*" />
+        <div class="drop-placeholder">
+          <strong>Drop thumbnail here</strong>
+          <span>or click to upload</span>
+          <small>Recommended: 1280 × 720</small>
+        </div>
+        <img class="thumb-preview" alt="Thumbnail preview" />
+      </label>
+      <div class="file-meta">No image loaded</div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
